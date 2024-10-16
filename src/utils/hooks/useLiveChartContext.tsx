@@ -27,10 +27,15 @@ const liveChartReducer = (state: State, action: Action): State => {
         ...state,
         events: [...state.events, action.payload!], 
       };
-    case "toggle_play":
+    case "event_play":
       return {
         ...state,
-        isPlaying: !state.isPlaying, 
+        isPlaying: true, 
+      };
+    case "event_pause":
+      return {
+        ...state,
+        isPlaying: false, 
       };
       case 'update_event':
         return {
@@ -38,7 +43,7 @@ const liveChartReducer = (state: State, action: Action): State => {
             events: state.events.map((event, index) =>
                 index === action.payload?.index ? { ...event, ...action.payload } : event
             ),
-        };
+        };        
         case "reset":
         return {
           events:initialEvents, 

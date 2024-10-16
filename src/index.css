@@ -1,3 +1,14 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.btn{
+    @apply  px-4 py-2 flex gap-2 items-center whitespace-nowrap
+    border  rounded disabled:bg-gray-200 disabled:opacity-60
+}
+.btn-primary{
+    @apply  p-2 py-1  mb-2 rounded  items-center flex gap-1 bg-blue-700 text-white 
+}
+.btn-secondary{
+    @apply  p-2 py-1  mb-2 rounded  items-center flex gap-1  bg-gray-700 text-white 
+}

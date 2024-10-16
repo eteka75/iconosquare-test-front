@@ -1,21 +1,22 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useLiveChartContext } from '../utils/hooks/useLiveChartContext';
+import { Pause, Play } from 'lucide-react';
 
-const LiveTable = ({ ...props }) => {
+const LiveTable = ({ selectIndex }: { selectIndex: number | null }) => {
     const { data, dispatch } = useLiveChartContext();
     const nbTotalEvents = data?.events?.length
     const eventsFiltered = data.events.slice(nbTotalEvents - 20, nbTotalEvents);
 
-    const [editingIndex, setEditingIndex] = useState<number | null>(null);
+    const [editingIndex, setEditingIndex] = useState<number | null>();
     const [editedValue1, setEditedValue1] = useState<number | null>(null);
     const [editedValue2, setEditedValue2] = useState<number | null>(null);
-
-    const handleCellClick = (index: number) => {
+    
+       const handleCellClick = (index: number) => {
         const event = data.events[index];
         if (event) {
 
             if (data.isPlaying) {
-                dispatch({ type: 'toggle_play' });
+                dispatch({ type: 'event_pause' });
             }
 
             setEditingIndex(index);
@@ -39,11 +40,16 @@ const LiveTable = ({ ...props }) => {
                     value2: editedValue2,
                 },
             });
-            setEditingIndex(null);
         }
+        setEditingIndex(null);
     };
     const handlePlayPauseToggle = () => {
-        dispatch({ type: 'toggle_play' });
+        if (data.isPlaying) {
+            dispatch({ type: 'event_pause' }); 
+        }else{
+            dispatch({ type: 'event_play' });
+        }
+        handleCancelEdition();
     };
 
     const handleCancelEdition = () => {
@@ -60,13 +66,15 @@ const LiveTable = ({ ...props }) => {
         <div>
             <div className="md:justify-end  py-1 text-sm flex gap-2">
                 <button onClick={handlePlayPauseToggle}
-                    className="px-4 rounded py-2 border">
-                    {data.isPlaying ? "Pause" : "Play"}
+                    className="btn">
+                   {data.isPlaying ? "Pause" : "Play"}
+                   {data.isPlaying ?<Pause />  : <Play />}
+                   
                 </button>
                 <button onClick={handleResetData}
-                    className="px-4 rounded py-2 border">
-                    Reset Values
-                </button>
+                    className="btn">
+
+                    Reset</button>
             </div>
             <div className="flex border border-gray-300 rounded mb-16">
                 <div>
@@ -75,11 +83,11 @@ const LiveTable = ({ ...props }) => {
                     <div className="p-2 border-t whitespace-nowrap border-gray-300">Value 2</div>
                 </div>
                 {eventsFiltered.map((event) => (
-                    <div key={event.index} className="border-l border-gray-300 flex-1">
+                    <div key={event.index} className={`border-l border-gray-300 flex-1 ${selectIndex === event.index &&'bg-blue-500 font-bold text-white'}`}>
                         <div className="p-2" onClick={() => handleCellClick(event.index)}>{event.index}</div>
-                        <div className="p-2 border-t border-gray-300"
+                       <div className="p-2 border-t border-gray-300"
                             onClick={() => handleCellClick(event.index)} >
-                            {editingIndex === event.index ? (
+                          {editingIndex === event.index ? (
                                 <input
                                     type="number"
                                     value={editedValue1 !== null ? editedValue1 : ''}
@@ -103,10 +111,10 @@ const LiveTable = ({ ...props }) => {
                             )}</div>
                         {editingIndex === event.index && (
                             <div className="flex gap-2 justify-between mx-2 flex-row">
-                                <button className="p-2 py-1  mb-2 rounded bg-blue-700 text-white" onClick={() => handleValueSubmit(event.index)}>
-                                    Save!
+                                <button className="btn-primary" onClick={() => handleValueSubmit(event.index)}>
+                                    Save
                                 </button>
-                                <button className="p-2 py-1  mb-2 rounded bg-gray-700 text-white" onClick={handleCancelEdition}>
+                                <button className="btn-secondary" onClick={handleCancelEdition}>
                                     Cancel
                                 </button>
                             </div>

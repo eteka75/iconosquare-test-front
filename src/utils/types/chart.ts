@@ -3,6 +3,7 @@ export interface Event {
   value1:  number;
   value2:  number;
   comment?: string;
+  isEditable?: "yes"|'no';
 }
 export interface State {
   events: Event[];
@@ -15,7 +16,7 @@ export interface LiveChartContextType {
 }
 
 export interface Action {
-  type:  "new_event" | "update_event" |"toggle_play" |  "reset";
+  type:  "new_event" | "update_event" |"event_pause" |"event_play" |  "reset";
   payload?: Event; 
 }
  
