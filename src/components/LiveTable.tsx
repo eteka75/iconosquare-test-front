@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useLiveChartContext } from '../utils/hooks/useLiveChartContext';
 import { Pause, Play } from 'lucide-react';
 
@@ -7,6 +7,7 @@ const LiveTable = ({ selectIndex }: { selectIndex: number | null }) => {
     const nbTotalEvents = data?.events?.length
     const eventsFiltered = data.events.slice(nbTotalEvents - 20, nbTotalEvents);
 
+    const [playinState, setPlayinState] = useState<boolean | null>(null);
     const [editingIndex, setEditingIndex] = useState<number | null>();
     const [editedValue1, setEditedValue1] = useState<number | null>(null);
     const [editedValue2, setEditedValue2] = useState<number | null>(null);
@@ -15,8 +16,11 @@ const LiveTable = ({ selectIndex }: { selectIndex: number | null }) => {
         const event = data.events[index];
         if (event) {
 
-            if (data.isPlaying) {
+            if (data.isPlaying===true) {
+                setPlayinState(true);
                 dispatch({ type: 'event_pause' });
+            }else{
+                setPlayinState(false);
             }
 
             setEditingIndex(index);
@@ -40,6 +44,10 @@ const LiveTable = ({ selectIndex }: { selectIndex: number | null }) => {
                     value2: editedValue2,
                 },
             });
+            if(playinState===true){
+                alert(playinState);
+                dispatch({ type: 'event_play' });
+            }
         }
         setEditingIndex(null);
     };
