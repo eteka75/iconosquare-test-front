@@ -44,8 +44,7 @@ const LiveTable = ({ selectIndex }: { selectIndex: number | null }) => {
                     value2: editedValue2,
                 },
             });
-            if(playinState===true){
-                alert(playinState);
+            if(playinState){
                 dispatch({ type: 'event_play' });
             }
         }
@@ -61,6 +60,9 @@ const LiveTable = ({ selectIndex }: { selectIndex: number | null }) => {
     };
 
     const handleCancelEdition = () => {
+        if(playinState){
+            dispatch({ type: 'event_play' });
+        }
         setEditingIndex(null);
         setEditedValue1(null);
         setEditedValue2(null);
